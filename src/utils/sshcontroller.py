@@ -9,28 +9,61 @@ Created on 2018-02-02
 """
 # imports
 import sys
+import json
 import paramiko
 
 # Variables with simple values
-nodenum = 3
+node_num = 3
 version = "0.0.1"
 # variables with complex values
 path = [
-    "../conf//",
-    "/home/gbxu/app"
+    "../conf/nodes.json",
+    "../conf"
 ]
 # classes
 
 
+class Node(object):
+    def __init__(self, name, host, port, user, passwd, keypair):
+        self.name = name
+        self.host = host
+        self.port = port
+        self.user = user
+        self.passwd = passwd
+        self.keypair = keypair
+
+
 class SSHController(object):
     def __init__(self, node):
+        self.client = paramiko.SSHClient()
+        self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.node = node
+        self.stdin, self.stdout, self.stderr = "", "", ""
 
-    def __str__(self):
-        return "Student object (name:%s)" %self.name
+    def start_with_passwd(self, node):
+        self.client.connect(hostname=node.host, port=node.port, username=node.user, password=node.passwd)
 
-    def __test(self):
+    def start_with_key(self, node):
+        self.client.connect(hostname=node.host, port=node.port, username=node.user, key_filename=node.keypair)
+
+    def exec_command(self, command):
+        stdin, stdout, stderr = self.client.exec_command(command)
+        print(stdout)
+
+    def set_command(self, command):
         pass
+
+    def _get_nodes(self):
+        nodes = []
+        with open(path[0], "r", encoding="utf-8") as json_file:
+            data = json.load(json_file)
+        for tmp in data:
+            node = Node(tmp, tmp["host"], tmp["port"], tmp["user"], tmp["passwd"], tmp["keypair"])
+            nodes.append(node)
+        return nodes
+
+    def close(self):
+        self.client.close()
 
 # functions
 

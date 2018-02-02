@@ -1,0 +1,26 @@
+{
+  "gpu1":
+  {
+    "host":"201.45.114.146",
+    "port":"50001",
+    "user":"gbxu",
+    "passwd":"**",
+    "keypair":"/home/gbxu/.ssh/id_rsa"
+  },
+  "gpu2":
+  {
+    "host":"201.45.114.146",
+    "port":"50002",
+    "user":"gbxu",
+    "passwd":"**",
+    "keypair":"/home/gbxu/.ssh/id_rsa"
+  },
+  "gpu3":
+  {
+    "host":"201.45.114.146",
+    "port":"50003",
+    "user":"gbxu",
+    "passwd":"**",
+    "keypair":"/home/gbxu/.ssh/id_rsa"
+  }
+}

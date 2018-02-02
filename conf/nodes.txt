@@ -1,4 +1,0 @@
-key nodeip port user passwd keypair
-gpu1 210.45.114.146 50001 gbxu ** /home/gbxu/.ssh/id_rsa
-gpu2 210.45.114.146 50002 gbxu ** /home/gbxu/.ssh/id_rsa
-gpu3 210.45.114.146 50003 gbxu ** /home/gbxu/.ssh/id_rsa
