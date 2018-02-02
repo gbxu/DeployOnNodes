@@ -53,19 +53,24 @@ class SSHController(object):
     def set_command(self, command):
         pass
 
-    def _get_nodes(self):
-        nodes = []
-        with open(path[0], "r", encoding="utf-8") as json_file:
-            data = json.load(json_file)
-        for tmp in data:
-            node = Node(tmp, tmp["host"], tmp["port"], tmp["user"], tmp["passwd"], tmp["keypair"])
-            nodes.append(node)
-        return nodes
-
     def close(self):
         self.client.close()
 
 # functions
+
+
+def get_nodes():
+    nodes = []
+    with open(path[0], "r", encoding="utf-8") as json_file:
+        data = json.load(json_file)
+    for tmp in data:
+        node = Node(tmp, tmp["host"], tmp["port"], tmp["user"], tmp["passwd"], tmp["keypair"])
+        nodes.append(node)
+    return nodes
+
+
+def multi_ssh():
+    pass
 
 
 if __name__ == "__main__":
