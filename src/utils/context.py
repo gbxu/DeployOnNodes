@@ -8,6 +8,7 @@ Created on 2018-02-03
 @mail: gb.xu@outlook.com
 """
 # import
+import platform
 # Variables with simple values
 version = "0.0.1"
 g_verbose = True
@@ -17,9 +18,28 @@ path = [
     "../../conf/nodes_forward.json",
     "../../conf/nodes_forward_local.json"
 ]
+
+keyfile = [
+    "/home/gbxu/.ssh/id_rsa",
+    "/Users/gbxu/.ssh/id_rsa"
+]
+
+username = "gbxu"
 # classes
 
 # functions
+
+
+def get_local_key():
+    if platform.system() == "Linux":
+        return keyfile[0]
+    elif platform.system() == "Darwin":
+        return keyfile[1]
+    else:
+        # TODO: need modify in Windows
+        verbose("Windows" + " isn't fit")
+        return None
+
 
 def verbose(s, flag=g_verbose):
     """

@@ -1,0 +1,6 @@
+[
+  {
+    "hosts":["gpu1","gpu2"],
+    "command":["ls"]
+  }
+]

@@ -44,7 +44,9 @@ def get_nodes():
 
 
 def get_forward_local():
-    pass
+    with open(context.path[1], "r", encoding="utf-8") as nodes_forward_local:
+        data = json.load(nodes_forward_local)
+    return data
 
 
 if __name__ == '__main__':
