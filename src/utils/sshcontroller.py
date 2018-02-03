@@ -7,80 +7,59 @@ Created on 2018-02-02
 @author: gb.xu
 @mail: gb.xu@outlook.com
 """
-# imports
-import sys
-import json
 import paramiko
-
-# Variables with simple values
-node_num = 3
-version = "0.0.1"
-# variables with complex values
-path = [
-    "../conf/nodes.json",
-    "../conf"
-]
-# classes
-
-
-class Node(object):
-    def __init__(self, name, host, port, user, passwd, keypair):
-        self.name = name
-        self.host = host
-        self.port = port
-        self.user = user
-        self.passwd = passwd
-        self.keypair = keypair
-
+from src.utils import databean
+from src.utils import context
 
 class SSHController(object):
     def __init__(self, node):
         self.client = paramiko.SSHClient()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.node = node
-        self.stdin, self.stdout, self.stderr = "", "", ""
+        self.channel = None
 
-    def start_with_passwd(self, node):
-        self.client.connect(hostname=node.host, port=node.port, username=node.user, password=node.passwd)
+    def __del__(self):
+        if self.channel is not None:
+            self.channel.close()
+        if self.client is not None:
+            self.client.close()
 
-    def start_with_key(self, node):
-        self.client.connect(hostname=node.host, port=node.port, username=node.user, key_filename=node.keypair)
+    def connect_host(self):
+        self.client.connect(hostname=self.node.host, port=self.node.port,
+                            username=self.node.user, key_filename=self.node.key)
+        context.verbose("... connected with key on Linux")
 
     def exec_command(self, command):
+        context.verbose("... exec the command:"+"\n"+command)
         stdin, stdout, stderr = self.client.exec_command(command)
-        print(stdout)
+        context.verbose("... result:")
+        for line in stdout:
+            context.verbose(line.strip("\n"))
 
-    def set_command(self, command):
-        pass
-
-    def close(self):
-        self.client.close()
-
-# functions
-
-
-def get_nodes():
-    nodes = []
-    with open(path[0], "r", encoding="utf-8") as json_file:
-        data = json.load(json_file)
-    for tmp in data:
-        node = Node(tmp, tmp["host"], tmp["port"], tmp["user"], tmp["passwd"], tmp["keypair"])
-        nodes.append(node)
-    return nodes
+    def close_all(self):
+        print("... closing the socket")
+        if self.channel is not None:
+            self.channel.close()
+        if self.client is not None:
+            self.client.close()
 
 
 def multi_ssh():
+    """
+    connect to local port via ssh.
+    :return:
+    """
     pass
 
 
 if __name__ == "__main__":
     """
-    from here, we will start the SSH connection.
+    test
     """
-    args = sys.argv
-    if len(args) == 1:  # only file name
-        print('Hello, world!')
-    elif len(args) == 2:
-        print('Hello, %s!' % args[1])
-    else:
-        print('Too many arguments!')
+    remote_nodes, server_node = databean.get_nodes()
+    # test gpu1
+    ssh_client = SSHController(server_node)
+    ssh_client.connect_host()
+    ssh_client.exec_command("ls")
+    ssh_client.close_all()
+
