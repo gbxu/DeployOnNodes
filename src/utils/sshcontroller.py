@@ -120,6 +120,7 @@ def multi_do_exec_command():
     connect to local port via ssh.
     :return:
     """
+
     remote_nodes, _ = databean.get_nodes(context.path[1])
     if remote_nodes is None:
         context.verbose("there are not the forwarding to localhost")
@@ -143,17 +144,74 @@ def multi_do_exec_command():
     return processes
 
 
+def do_upload(ssh, localpath, remotepath="./"):
+    ssh.connect()
+    ssh.upload(localpath, remotepath)
+    ssh.close()
+
+
+def multi_do_upload(localpath, remotepath="./"):
+    remote_nodes, _ = databean.get_nodes(context.path[1])
+    if remote_nodes is None:
+        context.verbose("there are not the forwarding to localhost")
+        return
+
+    ssh = {}  # ssh = {"gpu1":SSHController}
+    for node in remote_nodes:
+        ssh[node.name] = SSHController(node)
+
+    processes = []
+    p = Pool(len(ssh))
+    try:
+        for tmp in ssh.keys():
+            p.apply_async(do_upload, args=(ssh[tmp], localpath, remotepath))
+        p.close()
+        p.join()
+    except:
+        print("Error: unable to start process")
+    return processes
+
+
+def do_download(ssh, remotepath, localpath, name):
+    ssh.connect()
+    ssh.download(remotepath, localpath+name)
+    ssh.close()
+
+
+def multi_do_download(remotepath, localpath):
+    remote_nodes, _ = databean.get_nodes(context.path[1])
+    if remote_nodes is None:
+        context.verbose("there are not the forwarding to localhost")
+        return
+
+    ssh = {}  # ssh = {"gpu1":SSHController}
+    for node in remote_nodes:
+        ssh[node.name] = SSHController(node)
+
+    processes = []
+    p = Pool(len(ssh))
+    try:
+        for tmp in ssh.keys():
+            p.apply_async(do_download, args=(ssh[tmp], remotepath, localpath, tmp))
+        p.close()
+        p.join()
+    except:
+        print("Error: unable to start process")
+    return processes
+
+
 if __name__ == "__main__":
     """
     test
     """
     # multi_do_exec_command()
-
+    # multi_do_upload("../../resource/upload", "./")
+    multi_do_download("./folder_from_server", "../../resource/download/"+"folder_from_server/")
     # test gpu1
-    remote_nodes, server_node = databean.get_nodes(context.path[0])
-    ssh_client = SSHController(server_node)
-    ssh_client.connect()
+    # remote_nodes, server_node = databean.get_nodes(context.path[0])
+    # ssh_client = SSHController(server_node)
+    # ssh_client.connect()
     # ssh_client.exec_command("ls")
     # ssh_client.upload("../../resource/upload", "./")
-    ssh_client.download("./folder_from_server", "../../resource/download/"+"folder_from_server")
-    ssh_client.close()
+    # ssh_client.download("./folder_from_server", "../../resource/download/"+"folder_from_server_new")
+    # ssh_client.close()

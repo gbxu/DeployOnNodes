@@ -39,7 +39,6 @@ def get_nodes(filepath):
     remote_nodes = []
     server_node = None
     if "remote_nodes" in data:
-        print(conf)
         rdata = data["remote_nodes"]
         sdata = data["server_node"]
         for tmp in rdata:
