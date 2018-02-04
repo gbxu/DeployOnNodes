@@ -1,7 +1,17 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+############################################
+
+"""
+Created on 2018-02-03
+@author: gb.xu
+@mail: gb.xu@outlook.com
+"""
+
 import json
-import platform
 from src.utils import context
 
+conf = context.get_conf()
 
 class ForwardOptions(object):
     def __init__(self, user, key, shost, sport, rhost, rport):
@@ -23,30 +33,35 @@ class Node(object):
         self.key = key
 
 
-def get_nodes():
-    with open(context.path[0], "r", encoding="utf-8") as json_file:
+def get_nodes(filepath):
+    with open(filepath, "r", encoding="utf-8") as json_file:
         data = json.load(json_file)
-    rdata = data["remote_nodes"]
-    sdata = data["server_node"]
     remote_nodes = []
-    for tmp in rdata:
-        if platform.system() == "Linux":
-            node = Node(tmp["name"], tmp["host"], tmp["port"], tmp["user"], tmp["key_linux"])
-        elif platform.system() == "Darwin":
-            node = Node(tmp["name"], tmp["host"], tmp["port"], tmp["user"], tmp["key_darwin"])
-        else:
-            # TODO: need modify in Windows
-            context.verbose("Windows" + " isn't fit")
-        remote_nodes.append(node)
-    tmp = sdata
-    server_node = Node(tmp["name"], tmp["host"], tmp["port"], tmp["user"], tmp["key_darwin"])
+    server_node = None
+    if "remote_nodes" in data:
+        print(conf)
+        rdata = data["remote_nodes"]
+        sdata = data["server_node"]
+        for tmp in rdata:
+            node = Node(tmp["name"], tmp["host"], tmp["port"], conf["user"], conf["key"])
+            remote_nodes.append(node)
+
+        tmp = sdata
+        server_node = Node(tmp["name"], tmp["host"], tmp["port"], conf["user"], conf["key"])
+    else:
+        for tmp in data:
+            node = Node(tmp["name"], tmp["host"], tmp["port"], conf["user"], conf["key"])
+            remote_nodes.append(node)
     return remote_nodes, server_node
 
 
-def get_forward_local():
-    with open(context.path[1], "r", encoding="utf-8") as nodes_forward_local:
-        data = json.load(nodes_forward_local)
-    return data
+def get_commands():
+    with open(context.path[3],"r",encoding="utf-8") as json_file:
+        data = json.load(json_file)
+    cmds = {}
+    for tmp in data:
+        cmds[tmp["name"]] = tmp["commands"]
+    return cmds
 
 
 if __name__ == '__main__':

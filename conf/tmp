@@ -1,0 +1,9 @@
+,
+    {
+      "name":"gpu3",
+      "host":"gpu3",
+      "port":22,
+      "user":"gbxu",
+      "key_linux":"/home/gbxu/.ssh/id_rsa",
+      "key_darwin":"/Users/gbxu/.ssh/id_rsa"
+    }

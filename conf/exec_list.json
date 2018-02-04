@@ -1,6 +1,10 @@
 [
   {
-    "hosts":["gpu1","gpu2"],
-    "command":["ls"]
+    "name":"gpu1",
+    "commands":["ls","ps"]
+  },
+  {
+    "name":"gpu2",
+    "commands":["ps -A"]
   }
 ]

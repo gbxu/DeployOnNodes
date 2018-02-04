@@ -9,6 +9,7 @@ Created on 2018-02-03
 """
 # import
 import platform
+import json
 # Variables with simple values
 version = "0.0.1"
 g_verbose = True
@@ -16,25 +17,32 @@ g_verbose = True
 # variables with complex values
 path = [
     "../../conf/nodes_forward.json",
-    "../../conf/nodes_forward_local.json"
+    "../../conf/nodes_local.json",
+    "../../conf/conf.json",
+    "../../conf/exec_list.json"
 ]
 
-keyfile = [
-    "/home/gbxu/.ssh/id_rsa",
-    "/Users/gbxu/.ssh/id_rsa"
-]
-
-username = "gbxu"
 # classes
 
 # functions
 
 
-def get_local_key():
+def get_conf():
+    with open(path[2], "r", encoding="utf-8") as json_file:
+        conf = json.load(json_file)
+    local_key_name = get_local_key_name()
+    key = conf[local_key_name]
+    del conf["key_linux"]
+    del conf["key_darwin"]
+    conf["key"] = key
+    return conf
+
+
+def get_local_key_name():
     if platform.system() == "Linux":
-        return keyfile[0]
+        return "key_linux"
     elif platform.system() == "Darwin":
-        return keyfile[1]
+        return "key_darwin"
     else:
         # TODO: need modify in Windows
         verbose("Windows" + " isn't fit")

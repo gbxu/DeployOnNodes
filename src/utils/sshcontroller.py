@@ -10,9 +10,8 @@ Created on 2018-02-02
 import paramiko
 from src.utils import databean
 from src.utils import context
-from src.utils.databean import Node
 import sys
-from multiprocessing import Process
+from multiprocessing import Pool
 
 
 class SSHController(object):
@@ -28,12 +27,12 @@ class SSHController(object):
     def connect(self):
         self.client.connect(hostname=self.node.host, port=self.node.port,
                             username=self.node.user, key_filename=self.node.key)
-        context.verbose("... connected with key on Linux")
+        context.verbose("... connected %s with key on Linux" %self.node.name)
 
     def exec_command(self, command):
-        context.verbose("... exec the command:"+"\n"+command)
+        context.verbose("...%s exec the command:" % self.node.name + command)
         stdin, stdout, stderr = self.client.exec_command(command)
-        context.verbose("... result:")
+        context.verbose("... %s result:" % self.node.name)
         for line in stdout:
             context.verbose(line.strip("\n"))
 
@@ -64,9 +63,16 @@ class SSHController(object):
             sys.exit(1)
 
     def close(self):
-        print("... closing the socket")
+        print("... closing the %s socket" % self.node.name)
         if self.client is not None:
             self.client.close()
+
+
+def do_exec_command(ssh, commands):
+    ssh.connect()
+    for command in commands:
+        ssh.exec_command(command)
+    ssh.close()
 
 
 def multi_ssh():
@@ -74,36 +80,37 @@ def multi_ssh():
     connect to local port via ssh.
     :return:
     """
-    local_key = context.get_local_key()
-    data = databean.get_forward_local()
-    forward_local_ports = []
-    for tmp in data:
-        forward_local_ports.append(Node(tmp.name, "localhost", tmp.port, Node, Node))
-    ssh = {}
-    for tmp in forward_local_ports:
-        ssh[tmp.name] =  SSHController(Node(tmp.name, "localhost", tmp.port, context.username, local_key))
+    remote_nodes, _ = databean.get_nodes(context.path[1])
+    if remote_nodes is None:
+        context.verbose("there are not the forwarding to localhost")
+        return
+
+    cmds = databean.get_commands()
+    ssh = {}  # ssh = {"gpu1":SSHController}
+    for node in remote_nodes:
+        if node.name in cmds.keys():
+            ssh[node.name] = SSHController(node)
 
     processes = []
+    p = Pool(len(ssh))
     try:
-        lambda ssh[] # 添加command的host 产生对应进程，执行
-        p = Process(target=do_forward, args=(options, free_port))
-        p.start()
-        processes.append((remote_node.name, p))
+        for tmp in ssh.keys():
+            p.apply_async(do_exec_command, args=(ssh[tmp], cmds[tmp]))
+        p.close()
+        p.join()
     except:
         print("Error: unable to start process")
-    with open(context.path[1], "w", encoding="utf-8") as json_file:
-        json_file.write(json.dumps(forward_local_ports))
     return processes
 
 
 if __name__ == "__main__":
     """
     test
-    """
     remote_nodes, server_node = databean.get_nodes()
     # test gpu1
     ssh_client = SSHController(server_node)
     ssh_client.connect()
     ssh_client.exec_command("ls")
     ssh_client.close()
-
+    """
+    multi_ssh()

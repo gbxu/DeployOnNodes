@@ -1,0 +1,6 @@
+{
+  "machine": "local",
+  "key_linux": "/home/gbxu/.ssh/id_rsa",
+  "key_darwin": "/Users/gbxu/.ssh/id_rsa",
+  "user": "gbxu"
+}

@@ -4,36 +4,19 @@
     {
       "name":"gpu1",
       "host":"gpu1",
-      "port":22,
-      "user":"gbxu",
-      "key_linux":"/home/gbxu/.ssh/id_rsa",
-      "key_darwin":"/Users/gbxu/.ssh/id_rsa"
+      "port":22
     },
     {
       "name":"gpu2",
       "host":"gpu2",
-      "port":22,
-      "user":"gbxu",
-      "key_linux":"/home/gbxu/.ssh/id_rsa",
-      "key_darwin":"/Users/gbxu/.ssh/id_rsa"
-    },
-    {
-      "name":"gpu3",
-      "host":"gpu3",
-      "port":22,
-      "user":"gbxu",
-      "key_linux":"/home/gbxu/.ssh/id_rsa",
-      "key_darwin":"/Users/gbxu/.ssh/id_rsa"
+      "port":22
     }
   ],
   "server_node":
     {
       "name":"gpu0",
       "host":"sugon",
-      "port":50000,
-      "user":"gbxu",
-      "key_linux":"/home/gbxu/.ssh/id_rsa",
-      "key_darwin":"/Users/gbxu/.ssh/id_rsa"
+      "port":50000
     }
 }
 
