@@ -50,7 +50,7 @@ if __name__ == "__main__":
         print('Too many arguments!')
 
     if check_env():
-        sshcontroller.multi_ssh()
+        sshcontroller.multi_do_exec_command()
     else:
         sys.exit(0)
 

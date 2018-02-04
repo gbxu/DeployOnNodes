@@ -11,7 +11,47 @@ import paramiko
 from src.utils import databean
 from src.utils import context
 import sys
+import os
+import stat
 from multiprocessing import Pool
+
+
+class MySFTPClient(paramiko.SFTPClient):
+    def put_dir(self, source, target):
+        """
+        Uploads the contents of the source directory to the target path. The
+        target directory needs to exists. All subdirectories in source are
+        created under target.
+        :param source:
+        :param target:
+        :return:
+        """
+        for item in os.listdir(source):
+            if os.path.isfile(os.path.join(source, item)):
+                self.put(os.path.join(source, item), '%s/%s' % (target, item))
+            else:
+                self.mkdir('%s/%s' % (target, item), ignore_existing=True)
+                self.put_dir(os.path.join(source, item), '%s/%s' % (target, item))
+
+    def mkdir(self, path, mode=511, ignore_existing=False):
+        try:
+            super(MySFTPClient, self).mkdir(path, mode)
+        except IOError:
+            if ignore_existing:
+                pass
+            else:
+                raise
+
+    def get_dir(self, remote_dir, local_dir):
+        os.path.exists(local_dir) or os.makedirs(local_dir)
+        dir_items = self.listdir_attr(remote_dir)
+        for item in dir_items:
+            local_path = os.path.join(local_dir, item.filename)
+            remote_path = remote_dir+"/"+item.filename
+            if stat.S_ISDIR(item.st_mode):
+                self.get_dir(remote_path, local_path)
+            else:
+                self.get(remote_path, local_path)
 
 
 class SSHController(object):
@@ -27,7 +67,7 @@ class SSHController(object):
     def connect(self):
         self.client.connect(hostname=self.node.host, port=self.node.port,
                             username=self.node.user, key_filename=self.node.key)
-        context.verbose("... connected %s with key on Linux" %self.node.name)
+        context.verbose("... connected %s with key on Linux" % self.node.name)
 
     def exec_command(self, command):
         context.verbose("...%s exec the command:" % self.node.name + command)
@@ -36,11 +76,11 @@ class SSHController(object):
         for line in stdout:
             context.verbose(line.strip("\n"))
 
-    def upload(self):
+    def upload(self, localpath, remotepath="./"):
         try:
-            sftp = paramiko.SFTPClient.from_transport(self.client.get_transport())
-            sftp.put('demo_sftp.py', 'demo_sftp_folder/demo_sftp.py')
-            self.close()
+            sftp = MySFTPClient.from_transport(self.client.get_transport())
+            # sftp.put(localpath, remotepath)
+            sftp.put_dir(localpath, remotepath)
         except Exception as e:
             print('*** Caught exception: %s: %s' % (e.__class__, e))
             try:
@@ -49,11 +89,11 @@ class SSHController(object):
                 pass
             sys.exit(1)
 
-    def download(self):
+    def download(self, remotepath, localpath):
         try:
-            sftp = paramiko.SFTPClient.from_transport(self.client.get_transport())
-            sftp.get('demo_sftp_folder/README', 'README_demo_sftp')
-            self.close()
+            sftp = MySFTPClient.from_transport(self.client.get_transport())
+            # sftp.get(remotepath, localpath)
+            sftp.get_dir(remotepath, localpath)
         except Exception as e:
             print('*** Caught exception: %s: %s' % (e.__class__, e))
             try:
@@ -75,7 +115,7 @@ def do_exec_command(ssh, commands):
     ssh.close()
 
 
-def multi_ssh():
+def multi_do_exec_command():
     """
     connect to local port via ssh.
     :return:
@@ -106,11 +146,14 @@ def multi_ssh():
 if __name__ == "__main__":
     """
     test
-    remote_nodes, server_node = databean.get_nodes()
+    """
+    # multi_do_exec_command()
+
     # test gpu1
+    remote_nodes, server_node = databean.get_nodes(context.path[0])
     ssh_client = SSHController(server_node)
     ssh_client.connect()
-    ssh_client.exec_command("ls")
+    # ssh_client.exec_command("ls")
+    # ssh_client.upload("../../resource/upload", "./")
+    ssh_client.download("./folder_from_server", "../../resource/download/"+"folder_from_server")
     ssh_client.close()
-    """
-    multi_ssh()
