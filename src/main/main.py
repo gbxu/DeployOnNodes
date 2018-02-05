@@ -19,7 +19,7 @@ conf = context.get_conf()
 def check_env():
     if conf["machine"] == "local":
         flag = False
-        for str in os.popen("ps -A|grep forward").readlines():
+        for str in os.popen("ps -ef|grep forward").readlines():
             if "forward" in str and "grep" not in str:
                 flag = True
                 break
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         print('Too many arguments!')
 
     if check_env():
-        sshcontroller.multi_do_upload("../../resource/upload", "./")
+        # sshcontroller.multi_do_upload("../../resource/upload", "./")
         # sshcontroller.multi_do_exec_command()
         sshcontroller.multi_do_download("./folder_from_server", "../../resource/download/"+"folder_from_server/")
     else:

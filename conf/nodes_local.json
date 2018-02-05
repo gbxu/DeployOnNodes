@@ -1,1 +1,1 @@
-[{"name": "gpu1", "host": "localhost", "port": 62756}, {"name": "gpu2", "host": "localhost", "port": 62757}]
+[{"host": "localhost", "name": "gpu1", "port": 56147}, {"host": "localhost", "name": "gpu2", "port": 46273}]
