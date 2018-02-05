@@ -1,7 +1,8 @@
 [
   {
     "name":"gpu1",
-    "commands":["ls","ps"]
+    "commands":["ls",
+                "ps"]
   },
   {
     "name":"gpu2",
