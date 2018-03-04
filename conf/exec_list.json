@@ -3,8 +3,6 @@
     "name":"node1",
     "commands":[
       "sudo mv folder_from_local/hosts /etc/hosts",
-      "sudo mv folder_from_local/run_zookeeper_kafka.sh cmds/run_zookeeper_kafka.sh",
-      "chmod 755 cmds/run_zookeeper_kafka.sh",
       "./cmds/run_zookeeper_kafka.sh"
     ]
   },
@@ -12,8 +10,6 @@
     "name":"node2",
     "commands":[
       "sudo mv folder_from_local/hosts /etc/hosts",
-      "sudo mv folder_from_local/run_zookeeper_kafka.sh cmds/run_zookeeper_kafka.sh",
-      "chmod 755 cmds/run_zookeeper_kafka.sh",
       "./cmds/run_zookeeper_kafka.sh"
     ]
   },
@@ -21,8 +17,6 @@
     "name":"node3",
     "commands":[
       "sudo mv folder_from_local/hosts /etc/hosts",
-      "sudo mv folder_from_local/run_zookeeper_kafka.sh cmds/run_zookeeper_kafka.sh",
-      "chmod 755 cmds/run_zookeeper_kafka.sh",
       "./cmds/run_zookeeper_kafka.sh"
     ]
   }

@@ -50,7 +50,7 @@ if __name__ == "__main__":
         print('Too many arguments!')
 
     if check_env():
-        # sshcontroller.multi_do_upload("../../resource/upload", "./")
+        sshcontroller.multi_do_upload("../../resource/upload", "./")
         sshcontroller.multi_do_exec_command()
         # sshcontroller.multi_do_download("./folder_from_server", "../../resource/download/"+"folder_from_server/")
     else:
