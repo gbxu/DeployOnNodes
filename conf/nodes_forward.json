@@ -2,13 +2,18 @@
   "remote_nodes":
   [
     {
-      "name":"gpu1",
-      "host":"gpu1",
+      "name":"node1",
+      "host":"13.125.225.60",
       "port":22
     },
     {
-      "name":"gpu2",
-      "host":"gpu2",
+      "name":"node2",
+      "host":"13.125.181.149",
+      "port":22
+    },
+    {
+      "name":"node3",
+      "host":"52.79.173.201",
       "port":22
     }
   ],

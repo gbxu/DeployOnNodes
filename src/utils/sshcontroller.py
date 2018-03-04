@@ -81,6 +81,7 @@ class SSHController(object):
             sftp = MySFTPClient.from_transport(self.client.get_transport())
             # sftp.put(localpath, remotepath)
             sftp.put_dir(localpath, remotepath)
+            print("uploading is completed")
         except Exception as e:
             print('*** Caught exception: %s: %s' % (e.__class__, e))
             try:
@@ -94,6 +95,7 @@ class SSHController(object):
             sftp = MySFTPClient.from_transport(self.client.get_transport())
             # sftp.get(remotepath, localpath)
             sftp.get_dir(remotepath, localpath)
+            print("downloading is completed")
         except Exception as e:
             print('*** Caught exception: %s: %s' % (e.__class__, e))
             try:
