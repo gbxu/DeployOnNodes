@@ -20,7 +20,7 @@
 ## in AWS
 {
   "machine": "aws",
-  "key_linux": "/home/gbxu/.ssh/id_rsa",
+  "key_linux": "/home/gbxu/Documents/code/AWS/Kafka/Kafka2018.pem",
   "key_darwin": "/Users/gbxu/Documents/code/AWS/Kafka/Kafka2018.pem",
   "user": "ubuntu"
 }
