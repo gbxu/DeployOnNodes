@@ -3,17 +3,29 @@
   [
     {
       "name":"node1",
+<<<<<<< Updated upstream
       "host":"13.125.234.90",
+=======
+      "host":"13.125.221.83",
+>>>>>>> Stashed changes
       "port":22
     },
     {
       "name":"node2",
+<<<<<<< Updated upstream
       "host":"13.125.67.241",
+=======
+      "host":"13.125.216.94",
+>>>>>>> Stashed changes
       "port":22
     },
     {
       "name":"node3",
+<<<<<<< Updated upstream
       "host":"52.78.115.134",
+=======
+      "host":"13.125.162.138",
+>>>>>>> Stashed changes
       "port":22
     }
   ],
